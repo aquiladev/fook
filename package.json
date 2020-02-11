@@ -1,0 +1,18 @@
+{
+  "name": "festook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "flat": "truffle-flattener contracts\\FestookFactory.sol --output contracts_flat\\FestookFactory.sol"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "2.5.0",
+    "@truffle/hdwallet-provider": "1.0.30"
+  }
+}
