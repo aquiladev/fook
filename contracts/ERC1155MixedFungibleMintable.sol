@@ -19,9 +19,9 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
 
     // This function only creates the type.
     function create(
-        string calldata _uri,
+        string memory _uri,
         bool   _isNF)
-    external returns(uint256 _type) {
+    public returns(uint256 _type) {
 
         // Store the type in the upper 128 bits
         _type = (++nonce << 128);
@@ -40,7 +40,7 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
             emit URI(_uri, _type);
     }
 
-    function mintNonFungible(uint256 _type, address[] calldata _to) external creatorOnly(_type) {
+    function mintNonFungible(uint256 _type, address[] memory _to) public creatorOnly(_type) {
 
         // No need to check this is a nf type rather than an id since
         // creatorOnly() will only let a type pass through.
@@ -67,7 +67,7 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
         }
     }
 
-    function mintFungible(uint256 _id, address[] calldata _to, uint256[] calldata _quantities) external creatorOnly(_id) {
+    function mintFungible(uint256 _id, address[] memory _to, uint256[] memory _quantities) public creatorOnly(_id) {
 
         require(isFungible(_id));
 

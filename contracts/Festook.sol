@@ -16,6 +16,16 @@ contract Festook is ERC1155MixedFungibleMintable, ERC1155Metadata, Ownable {
         symbol = _symbol;
     }
 
+    function mintNonFungible(string calldata _uri, address[] calldata _to) external {
+        uint256 id = create(_uri, true);
+        mintNonFungible(id, _to);
+    }
+
+    function mintFungible(string calldata _uri, address[] calldata _to, uint256[] calldata _quantities) external {
+        uint256 id = create(_uri, false);
+        mintFungible(id, _to, _quantities);
+    }
+
     function uri(uint256 _id) public view returns (string memory) {
         return Strings.strConcat(baseMetadataURI, Strings.uint2str(_id));
     }

@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "flat": "truffle-flattener contracts\\FestookFactory.sol --output contracts_flat\\FestookFactory.sol"
+    "flat": "truffle-flattener contracts\\FestookFactory.sol --output contracts_flat\\FestookFactory.sol && truffle-flattener contracts\\Festook.sol --output contracts_flat\\Festook.sol"
   },
   "author": "",
   "license": "ISC",
