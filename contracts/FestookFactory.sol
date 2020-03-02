@@ -12,6 +12,17 @@ contract FestookFactory is Ownable, PullPayment {
     uint256 private _fee;
     address private _collector;
 
+    function create(string calldata name, string calldata symbol, string calldata uri) external payable {
+        require(msg.value == _fee, "value should be equal to fee amount");
+
+        Festook token = new Festook(name, symbol, uri);
+        token.transferOwnership(msg.sender);
+
+        _asyncTransfer(_collector, msg.value);
+
+        emit Created(msg.sender, address(token));
+    }
+
     function getFee() public view returns (uint256) {
         return _fee;
     }
@@ -26,16 +37,5 @@ contract FestookFactory is Ownable, PullPayment {
         _collector = collector;
 
         emit ChangedCollector(msg.sender, collector);
-    }
-
-    function create(string memory name, string memory symbol) public payable {
-        require(msg.value == _fee, "value should be equal to fee amount");
-
-        Festook token = new Festook(name, symbol);
-        token.transferOwnership(msg.sender);
-
-        _asyncTransfer(_collector, msg.value);
-
-        emit Created(msg.sender, address(token));
     }
 }
