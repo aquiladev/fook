@@ -34,7 +34,7 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
         creators[_type] = msg.sender;
 
         // emit a Transfer event with Create semantic to help with discovery.
-        emit TransferSingle(msg.sender, address(0x0), address(0x0), _type, 0);
+        // emit TransferSingle(msg.sender, address(0x0), address(0x0), _type, 0);
 
         if (bytes(_uri).length > 0)
             emit URI(_uri, _type);

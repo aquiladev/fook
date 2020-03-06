@@ -1353,7 +1353,7 @@ contract ERC1155MixedFungibleMintable is ERC1155MixedFungible {
         creators[_type] = msg.sender;
 
         // emit a Transfer event with Create semantic to help with discovery.
-        emit TransferSingle(msg.sender, address(0x0), address(0x0), _type, 0);
+        // emit TransferSingle(msg.sender, address(0x0), address(0x0), _type, 0);
 
         if (bytes(_uri).length > 0)
             emit URI(_uri, _type);
@@ -1509,7 +1509,7 @@ contract ERC1155Metadata is IERC1155 {
 
 // File: contracts\Festook.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.0;
 
 contract Festook is ERC1155MixedFungibleMintable, ERC1155Metadata, Ownable {
     // Contract name
@@ -1560,6 +1560,19 @@ contract FestookFactory is Ownable, PullPayment {
     uint256 private _fee;
     address private _collector;
 
+    function create(string calldata name, string calldata symbol, string calldata uri) external payable {
+        require(msg.value == _fee, "value should be equal to fee amount");
+
+        Festook token = new Festook(name, symbol);
+        string memory newUri = strConcat(uri, addressToString(address(token)), "/");
+        token.setBaseMetadataURI(newUri);
+        token.transferOwnership(msg.sender);
+
+        _asyncTransfer(_collector, msg.value);
+
+        emit Created(msg.sender, address(token));
+    }
+
     function getFee() public view returns (uint256) {
         return _fee;
     }
@@ -1576,14 +1589,32 @@ contract FestookFactory is Ownable, PullPayment {
         emit ChangedCollector(msg.sender, collector);
     }
 
-    function create(string memory name, string memory symbol) public payable {
-        require(msg.value == _fee, "value should be equal to fee amount");
+    function addressToString(address _addr) public pure returns(string memory)
+    {
+        bytes32 value = bytes32(uint256(_addr));
+        bytes memory alphabet = "0123456789abcdef";
 
-        Festook token = new Festook(name, symbol);
-        token.transferOwnership(msg.sender);
+        bytes memory str = new bytes(51);
+        str[0] = '0';
+        str[1] = 'x';
+        for (uint256 i = 0; i < 20; i++) {
+            str[2+i*2] = alphabet[uint8(value[i + 12] >> 4)];
+            str[3+i*2] = alphabet[uint8(value[i + 12] & 0x0f)];
+        }
+        return string(str);
+    }
 
-        _asyncTransfer(_collector, msg.value);
-
-        emit Created(msg.sender, address(token));
+    function strConcat(string memory _a, string memory _b, string memory _c) internal pure returns (string memory)
+    {
+        bytes memory _ba = bytes(_a);
+        bytes memory _bb = bytes(_b);
+        bytes memory _bc = bytes(_c);
+        string memory abc = new string(_ba.length + _bb.length + _bc.length);
+        bytes memory babc = bytes(abc);
+        uint256 k = 0;
+        for (uint256 i = 0; i < _ba.length; i++) babc[k++] = _ba[i];
+        for (uint256 i = 0; i < _bb.length; i++) babc[k++] = _bb[i];
+        for (uint256 i = 0; i < _bc.length; i++) babc[k++] = _bc[i];
+        return string(babc);
     }
 }
