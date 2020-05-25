@@ -10,6 +10,8 @@ contract Festook is ERC1155MixedFungibleMintable, ERC1155Metadata, Ownable {
     // Contract symbol
     string public symbol;
 
+    string public contractUri;
+
     constructor(string memory _name, string memory _symbol) public {
         name = _name;
         symbol = _symbol;
@@ -29,6 +31,10 @@ contract Festook is ERC1155MixedFungibleMintable, ERC1155Metadata, Ownable {
         return Strings.strConcat(baseMetadataURI, Strings.uint2str(_id));
     }
 
+    function contractURI() public view returns (string memory) {
+        return contractUri;
+    }
+
     /**
     * @dev Will update the base URL of token's URI
     * @param _newBaseMetadataURI New base URL of token's URI
@@ -38,5 +44,12 @@ contract Festook is ERC1155MixedFungibleMintable, ERC1155Metadata, Ownable {
         onlyOwner
     {
         _setBaseMetadataURI(_newBaseMetadataURI);
+    }
+
+    function setContractURI(string memory _newContractURI)
+        public
+        onlyOwner
+    {
+        contractUri = _newContractURI;
     }
 }
